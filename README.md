@@ -1,12 +1,12 @@
-#Investment Opportunities Optimizer
+# Investment Opportunities Optimizer
 
-##Introduction
+## Introduction
 
 The Investment Opportunities Optimizer is a Python script designed to help financial institutions evaluate potential loan offerings based on profitability and risk constraints. It computes acceptable investment opportunities by analyzing various combinations of loan parameters and identifies options that meet predefined risk appetite and profit margin requirements.
 
-##Key Concepts
+## Key Concepts
 
-###Loan Parameters
+### Loan Parameters
 
 The script considers the following key loan parameters:
 
@@ -16,7 +16,7 @@ The script considers the following key loan parameters:
 	•	Term Length (T): The duration of the loan in months.
 	•	Customer Interest Rate (r_c): The annual interest rate charged to the customer (as a decimal, e.g., 0.05 for 5%).
 
-###Profitability and Risk Assessment
+### Profitability and Risk Assessment
 
 The script evaluates each potential loan offering based on:
 
@@ -24,7 +24,7 @@ The script evaluates each potential loan offering based on:
 	•	Profit Margin: The profit amount expressed as a percentage of the loan amount.
 	•	Risk (R): The expected loss due to the probability of default.
 
-###Acceptable Investment Opportunities
+### Acceptable Investment Opportunities
 
 An investment opportunity is considered acceptable if:
 
@@ -32,7 +32,7 @@ An investment opportunity is considered acceptable if:
 	2.	Risk (R) is less than or equal to the maximum acceptable risk (R_max).
 	3.	Loan Amount (L) is positive.
 
-###Assumptions and Parameters
+### Assumptions and Parameters
 
 The script is built upon several financial assumptions and parameters:
 
@@ -50,9 +50,9 @@ The script is built upon several financial assumptions and parameters:
 	•	Maximum Acceptable Risk (R_max): $300.
 	•	Minimum Acceptable Profit Margin (P_margin_min): 0%.
 
-###Formulas Used
+### Formulas Used
 
-####1. Default Probability (P_d)
+#### 1. Default Probability (P_d)
 
 The probability that a borrower will default on the loan is calculated using an exponential function that accounts for the loan amount and term length:
 
@@ -72,13 +72,13 @@ Ensure that P_d is between 0 and 1:
 
 P_d = min(max(P_d, 0), 1)
 
-####2. Cost of Funds (C_f)
+#### 2. Cost of Funds (C_f)
 
 The lender’s cost of borrowing capital for the loan term:
 
 C_f = r_f * (T / 12)
 
-####3. Profit Amount
+#### 3. Profit Amount
 
 The expected profit from the loan, considering interest income, expected repayment, processing revenue, and costs:
 
@@ -101,13 +101,13 @@ R_t = P * R_t_rate
 
 profit_amount = expected_repayment - L - (L * C_f) + R_t
 
-####4. Profit Margin
+#### 4. Profit Margin
 
 The profit amount expressed as a percentage of the loan amount:
 
 profit_margin = (profit_amount / L) * 100
 
-####5. Risk (R)
+#### 5. Risk (R)
 
 The expected loss due to default:
 
@@ -119,9 +119,9 @@ total_amount = L + L * r_c * (T / 12)
 
 R = total_amount * P_d
 
-##Examples of Script Usage
+## Examples of Script Usage
 
-Example 1: Finding Profitable Options with No Down Payment
+### Example 1: Finding Profitable Options with No Down Payment
 
 To find acceptable investment opportunities for a fixed purchase amount of $5,000 with no down payment, use the following command:
 
@@ -141,7 +141,7 @@ Index  Purchase Amount ($)  Down Payment ($)  Loan Amount ($)  Term (Months)  In
 2      5000.00              0.00              5000.00          36.00          19.00              42.07              2099.33            108.69
 ...
 
-Example 2: Evaluating a Customer’s Desired Loan
+### Example 2: Evaluating a Customer’s Desired Loan
 
 If a customer requests specific loan terms, you can input their desired combination and find the closest acceptable alternative if it’s not acceptable.
 
@@ -184,7 +184,7 @@ Important Notes
 	•	Simplified Model: The script uses a simplified risk model and assumes fixed sensitivity coefficients (alpha and beta). Adjust these values as needed to fit real-world data.
 	•	Assumptions Validity: Validate the assumptions against your organization’s data and adjust parameters accordingly.
 
-Conclusion
+## Conclusion
 
 The Investment Opportunities Optimizer is a powerful tool that helps in:
 
@@ -194,11 +194,7 @@ The Investment Opportunities Optimizer is a powerful tool that helps in:
 
 By customizing the script’s parameters and ranges, you can tailor the analysis to your organization’s specific needs and risk appetite.
 
-Contact and Support
-
-If you have any questions or need further assistance with the script, please contact the development team or refer to the script’s documentation for more detailed information.
-
-Appendix: Script Parameters Overview
+## Appendix: Script Parameters Overview
 
 Command-Line Arguments
 
