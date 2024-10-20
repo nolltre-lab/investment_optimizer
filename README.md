@@ -36,21 +36,21 @@ An investment opportunity is considered acceptable if:
 
 The script is built upon several financial assumptions and parameters:
 
-1. Base Probability of Default (P_base): Set at 0.01 (1%), representing the default probability under base conditions.
+1. Base Probability of Default (P_base): Set at 0.01 (1%), representing the default probability under base conditions. *Typically output from a customer scoring model*
 2. Sensitivity Coefficients:
- * Alpha (alpha): Sensitivity to the effective loan amount, set at 0.0001.
- * Beta (beta): Sensitivity to the term length uncertainty, set at 0.02.
+ * Alpha (alpha): Sensitivity to the effective loan amount, set at 0.0001. *Typically another output of the customer scoring model. Used to indicate that the higher the debt a customer is having, the higher the likelihood that customer will default*
+ * Beta (beta): Sensitivity to the term length uncertainty, set at 0.02. *Typically another output of the customer scoring model. Used to indicate that certain customers are more sensitity to for example changing macroeconomic factors*
 4. Uncertainty Factor Coefficient:
- * Gamma (gamma): Rate at which uncertainty increases with term length, set at 0.05.
+ * Gamma (gamma): Rate at which uncertainty increases with term length, set at 0.05. *Either defined as an uncertainty by analyst or as an output from scoring model*
 3. Base Loan Conditions:
- * Base Loan Amount (L_base): $5,000.
- * Base Term Length (T_base): 12 months.
+ * Base Loan Amount (L_base): $5,000. *This could be used to define current open debt*
+ * Base Term Length (T_base): 12 months. *This is used to base the term sensitivity measures*
  * Base Customer Interest Rate (r_c_base): 0.10 (10%).
-4. Cost of Funds Rate (r_f): The lender’s annual cost of capital, set at 0.05 (5%).
-5. Processing Revenue Rate (R_t_rate): Additional revenue from processing fees, set at 0.02 (2%) of the purchase amount.
+4. Cost of Funds Rate (r_f): The lender’s annual cost of capital, set at 0.05 (5%). *Should use standard lending company values*
+5. Processing Revenue Rate (R_t_rate): Additional revenue from processing fees, set at 0.02 (2%) of the purchase amount. *Likely different for different purchase partners*
 6. Risk Appetite Constraints:
- * Maximum Acceptable Risk (R_max): $300.
- * Minimum Acceptable Profit Margin (P_margin_min): 0%.
+ * Maximum Acceptable Risk (R_max): $300. *Key input from risk analysts to control the amount of risk acceptable for each purchase*
+ * Minimum Acceptable Profit Margin (P_margin_min): 0%. *Key input from risk analyst to control the amount of risk to accept. High required profit margin would indicate low risk appetite for scenario*
 
 ### Formulas Used
 
@@ -211,6 +211,16 @@ The Investment Opportunities Optimizer is a powerful tool that helps in:
 * Making informed decisions by analyzing the interplay between different loan parameters.
 
 By customizing the script’s parameters and ranges, you can tailor the analysis to your organization’s specific needs and risk appetite.
+
+## Disclaimer
+
+Important: This script is provided for educational and informational purposes only. It is a simplified model intended to demonstrate concepts related to loan risk assessment and profitability analysis.
+
+* Not for Production Use: The script is not intended for production environments and should not be used as-is to make real-world financial decisions or to offer actual loan products.
+* No Warranty: The author(s) make no warranties or representations regarding the accuracy, completeness, or suitability of the script for any particular purpose.
+* Use at Your Own Risk: Any use of this script or its components is at your own risk. The author(s) are not liable for any losses, damages, or adverse outcomes resulting from the use of this script.
+* Professional Consultation Recommended: Before implementing any financial models or tools in a production setting, it is essential to consult with qualified financial professionals and risk management experts.
+* Subject to Change: Financial models and regulatory requirements can vary widely and are subject to change. This script may not reflect the most current industry practices or legal requirements.
 
 ## Appendix: Script Parameters Overview
 
