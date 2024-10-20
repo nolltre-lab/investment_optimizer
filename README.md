@@ -122,21 +122,27 @@ R = total_amount * P_d
 
 To find acceptable investment opportunities for a fixed purchase amount of $5,000 with no down payment, use the following command:
 
+```
 python3 investment_optimizer.py --fixed_dimension purchase_amount --fixed_value 5000 --down_payment_max 0
+```
 
 Explanation:
 
-* --fixed_dimension purchase_amount: Fixes the purchase amount parameter.
-* --fixed_value 5000: Sets the fixed purchase amount to $5,000.
-* --down_payment_max 0: Sets the maximum down payment to 0% (no down payment).
+```
+--fixed_dimension purchase_amount: Fixes the purchase amount parameter.
+--fixed_value 5000: Sets the fixed purchase amount to $5,000.
+--down_payment_max 0: Sets the maximum down payment to 0% (no down payment).
+```
 
 Output:
 
+```
 Top Most Profitable Combinations:
 Index  Purchase Amount ($)  Down Payment ($)  Loan Amount ($)  Term (Months)  Interest Rate (%)  Profit Margin (%)  Profit Amount ($)  Risk ($)
 1      5000.00              0.00              5000.00          36.00          20.00              44.39              2219.41            130.59
 2      5000.00              0.00              5000.00          36.00          19.00              42.07              2099.33            108.69
 ...
+```
 
 ### Example 2: Evaluating a Customer’s Desired Loan
 
@@ -144,6 +150,7 @@ If a customer requests specific loan terms, you can input their desired combinat
 
 Command:
 
+```
 python3 investment_optimizer.py \
   --fixed_dimension purchase_amount \
   --fixed_value 10000 \
@@ -152,21 +159,24 @@ python3 investment_optimizer.py \
   --customer_term_length 12 \
   --customer_interest_rate 0.03 \
   --find_closest
+```
 
 Explanation:
-
-* --customer_purchase_amount 10000: Customer’s desired purchase amount of $10,000.
-* --customer_down_payment 1000: Customer’s down payment of $1,000.
-* --customer_term_length 12: Customer’s desired term length of 12 months.
-* --customer_interest_rate 0.03: Customer’s desired interest rate of 3% (entered as 0.03).
-* --find_closest: Finds the closest acceptable combination if the desired one isn’t acceptable.
+```
+--customer_purchase_amount 10000: Customer’s desired purchase amount of $10,000.
+--customer_down_payment 1000: Customer’s down payment of $1,000.
+--customer_term_length 12: Customer’s desired term length of 12 months.
+--customer_interest_rate 0.03: Customer’s desired interest rate of 3% (entered as 0.03).
+--find_closest: Finds the closest acceptable combination if the desired one isn’t acceptable.
+```
 
 Possible Output:
-
+```
 Customer's desired combination is NOT acceptable.
 Closest acceptable combination:
 Purchase Amount ($)  Down Payment ($)  Loan Amount ($)  Term (Months)  Interest Rate (%)  Profit Margin (%)  Profit Amount ($)  Risk ($)
 10000.00             1000.00           9000.00          12.00          5.00               5.50               495.00             200.00
+```
 
 How the Script Can Be Used
 
@@ -195,22 +205,30 @@ By customizing the script’s parameters and ranges, you can tailor the analysis
 
 Command-Line Arguments
 
-* --fixed_dimension: Dimension to fix for plotting (purchase_amount, down_payment, term_length, or interest_rate).
-* --fixed_value: Value at which to fix the selected dimension.
+```
+--fixed_dimension: Dimension to fix for plotting (purchase_amount, down_payment, term_length, or interest_rate).
+--fixed_value: Value at which to fix the selected dimension.
+```
 
 Optional Parameters for Customer’s Desired Point
 
-* --customer_purchase_amount: Customer’s desired purchase amount.
-* --customer_down_payment: Customer’s desired down payment amount.
-* --customer_term_length: Customer’s desired term length in months.
-* --customer_interest_rate: Customer’s desired interest rate (as a decimal).
+```
+--customer_purchase_amount: Customer’s desired purchase amount.
+--customer_down_payment: Customer’s desired down payment amount.
+--customer_term_length: Customer’s desired term length in months.
+--customer_interest_rate: Customer’s desired interest rate (as a decimal).
+```
 
 Flags
 
-* --find_closest: Find the closest acceptable point to the customer’s desired combination if it is not acceptable.
+```
+--find_closest: Find the closest acceptable point to the customer’s desired combination if it is not acceptable.
+```
 
 Remember to run the script with the -h or --help flag to see all available options and their descriptions:
 
+```
 python3 investment_optimizer.py --help
+```
 
 Note: This document is intended to provide an overview of the Investment Opportunities Optimizer script, its functionality, and how to use it effectively. Adjust the script parameters and formulas as needed to align with your specific business requirements and regulatory environment.
