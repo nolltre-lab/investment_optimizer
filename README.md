@@ -39,7 +39,9 @@ The script is built upon several financial assumptions and parameters:
 1. Base Probability of Default (P_base): Set at 0.01 (1%), representing the default probability under base conditions.
 2. Sensitivity Coefficients:
  * Alpha (alpha): Sensitivity to the effective loan amount, set at 0.0001.
- * Beta (beta): Sensitivity to the term length, set at 0.01.
+ * Beta (beta): Sensitivity to the term length uncertainty, set at 0.02.
+4. Uncertainty Factor Coefficient:
+ * Gamma (gamma): Rate at which uncertainty increases with term length, set at 0.05.
 3. Base Loan Conditions:
  * Base Loan Amount (L_base): $5,000.
  * Base Term Length (T_base): 12 months.
@@ -54,7 +56,7 @@ The script is built upon several financial assumptions and parameters:
 
 #### 1. Default Probability (P_d)
 
-The probability that a borrower will default on the loan is calculated using an exponential function that accounts for the loan amount and term length:
+The probability that a borrower will default on the loan is calculated using an exponential function that accounts for the loan amount and incorporates increasing uncertainty over the term length:
 
 * Effective Loan Amount (E_L):
 
@@ -62,7 +64,9 @@ E_L = L * (1 + (r_c * T) / 12)
 
 * Exponent:
 
-exponent = alpha * (E_L - E_L_base) + beta * (T - T_base)
+exponent = alpha * (E_L - E_L_base) + beta * sqrt(max(T - T_base, 0))
+
+ * Note: The sqrt(max(T - T_base, 0)) term models the increasing uncertainty over time, increasing at a decreasing rate as the term lengthens.
 
 * Probability of Default (P_d):
 
@@ -106,15 +110,22 @@ profit_margin = (profit_amount / L) * 100
 
 #### 5. Risk (R)
 
-The expected loss due to default:
+The expected loss due to default, adjusted for uncertainty over the term length:
 
 * Total Amount:
 
 total_amount = L + L * r_c * (T / 12)
 
+*	Uncertainty Factor:
+
+uncertainty_factor = 1 + gamma * sqrt(max(T - T_base, 0))
+
+ * Note: This factor increases the expected loss to account for the growing uncertainty in default probability assessments over longer terms.
+
+
 * Risk:
 
-R = total_amount * P_d
+R = total_amount * P_d * uncertainty_factor
 
 ## Examples of Script Usage
 

@@ -28,7 +28,7 @@ parser.add_argument('--down_payment_max', type=float, default=0.5,
 parser.add_argument('--down_payment_steps', type=int, default=20,
                     help='Number of steps in down payment percentage range.')
 
-parser.add_argument('--term_min', type=float, default=6,
+parser.add_argument('--term_min', type=float, default=0,
                     help='Minimum term length in months.')
 parser.add_argument('--term_max', type=float, default=36,
                     help='Maximum term length in months.')
@@ -65,7 +65,12 @@ P_base = 0.01  # 1% base default probability
 
 # Sensitivity coefficients
 alpha = 0.0001  # Sensitivity to effective loan amount
-beta = 0.01     # Sensitivity to term length
+
+# Modify beta to reflect the new term sensitivity function
+beta = 0.02     # Adjusted beta value
+
+# Introduce gamma for uncertainty in risk calculation
+gamma = 0.05    # Uncertainty increase rate with term length
 
 # Base loan amount and term length
 L_base = 5000   # Base loan amount in dollars
@@ -165,7 +170,8 @@ valid_L_mask = L_grid > 0
 
 def default_probability(L, T, r_c):
     E_L = L * (1 + r_c * T / 12)
-    exponent = alpha * (E_L - E_L_base) + beta * (T - T_base)
+    # Adjust exponent to use sqrt for term sensitivity
+    exponent = alpha * (E_L - E_L_base) + beta * np.sqrt(np.maximum(T - T_base, 0))
     P_d = P_base * np.exp(exponent)
     P_d = np.clip(P_d, 0, 1)  # Ensure P_d is between 0 and 1
     return P_d
@@ -188,9 +194,11 @@ def profit_margin(L, profit_amt):
     return profit_margin_percentage
 
 def risk(L, T, r_c):
-    Pd = default_probability(L, T, r_c)
+    P_d = default_probability(L, T, r_c)
     total_amount = L + L * r_c * (T / 12)
-    expected_loss = total_amount * Pd
+    # Introduce uncertainty factor in risk calculation
+    uncertainty_factor = 1 + gamma * np.sqrt(np.maximum(T - T_base, 0))
+    expected_loss = total_amount * P_d * uncertainty_factor
     return expected_loss
 
 # Calculate grids
@@ -318,35 +326,38 @@ if args.customer_purchase_amount is not None and args.customer_down_payment is n
         print(f"{customer_P:<20.2f} {customer_D:<17.2f} {customer_L:<15.2f} "
               f"{customer_T:<15.2f} {customer_r_c*100:<17.2f} {profit_margin_customer:<18.2f} {profit_amt_customer:<17.2f} {risk_customer:<10.2f}")
     elif args.find_closest:
-        # Compute Euclidean distances to acceptable points
-        distances = np.sqrt(
-            ((P_acc - customer_P) / (args.purchase_max - args.purchase_min)) ** 2 +
-            ((D_acc - customer_D) / (args.purchase_max - args.purchase_min)) ** 2 +
-            ((T_acc - customer_T) / (args.term_max - args.term_min)) ** 2 +
-            ((r_c_acc - customer_r_c) / (args.interest_max - args.interest_min)) ** 2
-        )
+        # Ensure we only consider acceptable points matching the fixed dimension
+        if len(P_acc_plot) == 0:
+            print("\nNo acceptable alternatives found within the fixed dimension.")
+        else:
+            # Compute Euclidean distances to acceptable points within fixed dimension
+            distances = np.sqrt(
+                ((P_acc_plot - customer_P) / (args.purchase_max - args.purchase_min)) ** 2 +
+                ((D_acc_plot - customer_D) / (args.purchase_max - args.purchase_min)) ** 2 +
+                ((T_acc_plot - customer_T) / (args.term_max - args.term_min)) ** 2 +
+                ((r_c_acc_plot - customer_r_c) / (args.interest_max - args.interest_min)) ** 2
+            )
 
-        # Find the index of the closest acceptable point
-        closest_idx = np.argmin(distances)
+            # Find the index of the closest acceptable point
+            closest_idx = np.argmin(distances)
 
-        # Extract the closest acceptable point
-        closest_P = P_acc[closest_idx]
-        closest_D = D_acc[closest_idx]
-        closest_L = L_acc[closest_idx]
-        closest_T = T_acc[closest_idx]
-        closest_r_c = r_c_acc[closest_idx]
-        closest_profit_margin = profit_margin_acc[closest_idx]
-        closest_profit_amount = profit_amount_acc[closest_idx]
-        closest_R = R_acc[closest_idx]
+            # Extract the closest acceptable point
+            closest_P = P_acc_plot[closest_idx]
+            closest_D = D_acc_plot[closest_idx]
+            closest_L = L_acc_plot[closest_idx]
+            closest_T = T_acc_plot[closest_idx]
+            closest_r_c = r_c_acc_plot[closest_idx]
+            closest_profit_margin = profit_margin_acc_plot[closest_idx]
+            closest_profit_amount = profit_amount_acc_plot[closest_idx]
+            closest_R = R_acc_plot[closest_idx]
 
-        print("\nCustomer's desired combination is NOT acceptable.")
-        print("Closest acceptable combination:")
-        print(f"{'Purchase Amount ($)':<20} {'Down Payment ($)':<17} {'Loan Amount ($)':<15} "
-              f"{'Term (Months)':<15} {'Interest Rate (%)':<17} {'Profit Margin (%)':<18} {'Profit Amount ($)':<17} {'Risk ($)':<10}")
-        print(f"{closest_P:<20.2f} {closest_D:<17.2f} {closest_L:<15.2f} "
-              f"{closest_T:<15.2f} {closest_r_c*100:<17.2f} {closest_profit_margin:<18.2f} {closest_profit_amount:<17.2f} {closest_R:<10.2f}")
-
-        plot_closest_point = True  # Set flag to plot the closest acceptable point
+            print("\nCustomer's desired combination is NOT acceptable.")
+            print("Closest acceptable combination:")
+            print(f"{'Purchase Amount ($)':<20} {'Down Payment ($)':<17} {'Loan Amount ($)':<15} "
+                  f"{'Term (Months)':<15} {'Interest Rate (%)':<17} {'Profit Margin (%)':<18} {'Profit Amount ($)':<17} {'Risk ($)':<10}")
+            print(f"{closest_P:<20.2f} {closest_D:<17.2f} {closest_L:<15.2f} "
+                  f"{closest_T:<15.2f} {closest_r_c*100:<17.2f} {closest_profit_margin:<18.2f} {closest_profit_amount:<17.2f} {closest_R:<10.2f}")
+            plot_closest_point = True  # Set flag to plot the closest acceptable point
     else:
         print("\nCustomer's desired combination is NOT acceptable.")
         print("No acceptable alternatives found.")
